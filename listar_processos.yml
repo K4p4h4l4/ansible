@@ -1,5 +1,6 @@
+---
 - name: Executar script PowerShell no Windows
-  hosts: w11
+  hosts: casa
   tasks:
     - name: Listar processos
       ansible.windows.win_powershell:
