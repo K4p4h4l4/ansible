@@ -1,0 +1,12 @@
+Quero que me passe esse script "---
+- name: Listar processos em execução no Windows
+  hosts: casa
+  gather_facts: no
+  tasks:
+    - name: Listar processos usando PowerShell
+      win_shell: |
+        Get-Process | Select-Object Name, Id, CPU, WS | Sort-Object CPU -Descending
+      register: processos_ativos
+    - name: Mostrar lista de processos
+      debug:
+        var: processos_ativos.stdout_lines" para powershell
