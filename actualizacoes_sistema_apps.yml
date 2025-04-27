@@ -1,0 +1,17 @@
+---
+- name: Atualizar Windows - Chocolatey e Winget
+  hosts: casa
+  gather_facts: yes
+  tasks:
+
+    - name: Atualizar todos os pacotes via Chocolatey
+      win_shell: |
+        choco upgrade all -y
+      args:
+        executable: cmd
+
+    - name: Atualizar todos os pacotes via Winget
+      win_shell: |
+        winget upgrade
+      args:
+        executable: cmd
