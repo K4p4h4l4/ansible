@@ -64,7 +64,7 @@
 
     - name: Atualizar todos os pacotes via Winget
       win_shell: |
-        winget upgrade --all --accept-package-agreements --accept-source-agreements -u --uninstall-previous -h
+        winget upgrade --all --accept-package-agreements --accept-source-agreements -u --uninstall-previous --silent
       args:
         executable: cmd
       ignore_errors: yes
