@@ -2,7 +2,12 @@
 - name: Executar script PowerShell no Windows
   hosts: casa
   tasks:
-    - name: Listar processos
+    - name: Listar processos que mais consomem CPU
       ansible.windows.win_powershell:
         script: |
-          Get-Process | Select-Object Name, ID, CPU | Format-Table -AutoSize
+          Get-Process | Sort-Object CPU -Descending | Select-Object Name, ID, CPU | Format-Table -AutoSize | Out-String
+      register: process_output
+
+    - name: Exibir saída dos processos
+      debug:
+        msg: "{{ process_output.stdout }}"
