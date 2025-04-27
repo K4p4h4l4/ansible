@@ -67,3 +67,5 @@
         winget upgrade --all --accept-package-agreements --accept-source-agreements --silent
       args:
         executable: cmd
+      ignore_errors: yes
+
