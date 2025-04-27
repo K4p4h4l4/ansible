@@ -1,17 +1,41 @@
 ---
-- name: Atualizar Windows - Chocolatey e Winget
-  hosts: casa
+- name: Listar atualizações disponíveis no Windows
+  hosts: windows
   gather_facts: yes
   tasks:
 
-    - name: Atualizar todos os pacotes via Chocolatey
+    - name: Listar atualizações do Windows Update
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+          - UpdateRollups
+          - Updates
+        state: searched  # Só pesquisa, não instala
+      register: win_update_check
+
+    - name: Mostrar atualizações do Windows Update encontradas
+      debug:
+        var: win_update_check.updates
+
+    - name: Listar pacotes desatualizados via Chocolatey
       win_shell: |
-        choco upgrade all -y
+        choco outdated
+      register: choco_outdated
       args:
         executable: cmd
 
-    - name: Atualizar todos os pacotes via Winget
+    - name: Mostrar pacotes desatualizados do Chocolatey
+      debug:
+        var: choco_outdated.stdout_lines
+
+    - name: Listar pacotes desatualizados via Winget
       win_shell: |
         winget upgrade
+      register: winget_outdated
       args:
         executable: cmd
+
+    - name: Mostrar pacotes desatualizados do Winget
+      debug:
+        var: winget_outdated.stdout_lines
