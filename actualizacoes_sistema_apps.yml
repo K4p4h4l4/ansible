@@ -1,6 +1,6 @@
 ---
 - name: Listar atualizações disponíveis no Windows
-  hosts: windows
+  hosts: casa
   gather_facts: yes
   tasks:
 
