@@ -1,5 +1,5 @@
 ---
-- name: Listar atualizações disponíveis no Windows
+- name: Listar e aplicar atualizações no Windows
   hosts: casa
   gather_facts: yes
   tasks:
@@ -11,12 +11,28 @@
           - CriticalUpdates
           - UpdateRollups
           - Updates
-        state: searched  # Só pesquisa, não instala
+        state: searched  # Apenas pesquisa
       register: win_update_check
 
     - name: Mostrar atualizações do Windows Update encontradas
       debug:
         var: win_update_check.updates
+
+    - name: Instalar atualizações do Windows Update
+      win_updates:
+        category_names:
+          - SecurityUpdates
+          - CriticalUpdates
+          - UpdateRollups
+          - Updates
+        reboot: yes
+        reboot_timeout: 3600
+        state: installed  # Agora instala
+      register: win_update_result
+
+    - name: Mostrar atualizações instaladas do Windows Update
+      debug:
+        var: win_update_result.installed_update_ids
 
     - name: Listar pacotes desatualizados via Chocolatey
       win_shell: |
@@ -29,6 +45,12 @@
       debug:
         var: choco_outdated.stdout_lines
 
+    - name: Atualizar todos os pacotes via Chocolatey
+      win_shell: |
+        choco upgrade all -y
+      args:
+        executable: cmd
+
     - name: Listar pacotes desatualizados via Winget
       win_shell: |
         winget upgrade
@@ -39,3 +61,9 @@
     - name: Mostrar pacotes desatualizados do Winget
       debug:
         var: winget_outdated.stdout_lines
+
+    - name: Atualizar todos os pacotes via Winget
+      win_shell: |
+        winget upgrade --all --accept-package-agreements --accept-source-agreements --silent
+      args:
+        executable: cmd
