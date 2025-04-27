@@ -5,9 +5,9 @@
     - name: Listar processos que mais consomem CPU
       ansible.windows.win_powershell:
         script: |
-          Get-Process | Sort-Object CPU -Descending | Select-Object Name, ID, CPU | Format-Table -AutoSize | Out-String
+          Get-Process | Sort-Object CPU -Descending | Select-Object Name, ID, CPU, @{Name="MemoryMB";Expression={[math]::Round($_.WorkingSet64 / 1MB, 2)}} -First 15 | Format-Table -AutoSize | Out-String
       register: process_output
 
     - name: Exibir saída dos processos
       debug:
-        msg: "{{ process_output.stdout }}"
+        msg: "{{ process_output.output }}"
